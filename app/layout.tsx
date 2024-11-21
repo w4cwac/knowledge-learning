@@ -26,9 +26,9 @@ export default async function RootLayout({
 
   const session = await auth()
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className="bg-white">
       <body
-        className={`${comicSans.variable}  antialiased`}
+        className={`${comicSans.variable}  antialiased`} 
       >
         <ThemeProvider
             attribute="class"
