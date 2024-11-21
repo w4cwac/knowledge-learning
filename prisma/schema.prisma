@@ -19,6 +19,116 @@ enum Role {
   ADMIN
 }
 
+model Course{
+  id String @id @default(cuid())
+  title String @db.Text
+  description String? @db.Text
+  price Float?
+  imageUrl String?
+  isPublished Boolean @default(false)
+  createdAt DateTime @default(now() )
+  updatedAt DateTime @updatedAt
+
+  category Category? @relation(fields: [categoryId], references: [id])
+  categoryId String?
+
+  teacher User @relation(fields: [teacherId], references: [id])
+  teacherId String
+  
+  attachments Attachment[]
+  purchase Purchase[]
+  chapters Chapter[]
+}
+
+model Chapter {
+  id String @id @default(cuid())
+  title String @db.Text
+  description String? @db.Text
+  videoUrl String?
+  position Int
+  isPublished Boolean @default(false)
+  isFree Boolean @default(false)
+  createdAt DateTime @default(now() )
+  updatedAt DateTime @updatedAt
+
+  muxData MuxData? 
+  userProgress UserProgress[]
+
+  courses Course? @relation(fields: [courseId], references: [id]) //relation one to Many attchment à 1 seul cours mais le cours à plusieurs attachments
+  courseId String?
+}
+
+model Category {
+  id String @id @default(cuid())
+  name String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  courses Course[]
+}
+
+model Attachment {
+  id String @id @default(cuid())
+  name String?
+  url String @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  courses Course? @relation(fields: [courseId], references: [id]) //relation one to Many attchment à 1 seul cours mais le cours à plusieurs attachments
+  courseId String?
+}
+
+model MuxData {
+  id String @id @default(cuid())
+  assetId String 
+  playbackId String?
+  duration Float?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  chapter Chapter? @relation(fields: [chapterId], references: [id]) //relation one to Many attchment à 1 seul cours mais le cours à plusieurs attachments
+  chapterId String? @unique
+}
+
+model UserProgress {
+  id String @id @default(cuid())
+  isCompleted Boolean @default(false)
+  createdAt DateTime @default(now())
+  upadatedAt DateTime @updatedAt
+
+  user User? @relation(fields: [userId], references: [id]) //relation one to Many attchment à 1 seul cours mais le cours à plusieurs attachments
+  userId String?
+  chapter Chapter? @relation(fields: [chapterId], references: [id]) //relation one to Many attchment à 1 seul cours mais le cours à plusieurs attachments
+  chapterId String?
+  
+
+  @@unique([userId, chapterId])
+}
+
+model Purchase {
+  id String @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User? @relation(fields: [userId], references: [id]) //relation one to Many attchment à 1 seul cours mais le cours à plusieurs attachments
+  userId String?
+
+  courses Course? @relation(fields: [courseId], references: [id]) //relation one to Many attchment à 1 seul cours mais le cours à plusieurs attachments
+  courseId String?
+
+  @@unique([userId, courseId])
+}
+
+model StripeCustomer {
+  id String @id @default(cuid())
+  stripeCustomerId String @unique 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User? @relation(fields: [userId], references: [id]) //relation one to Many attchment à 1 seul cours mais le cours à plusieurs attachments
+  userId String? @unique
+}
+
 model Account {
   id                 String  @id @default(cuid())
   userId             String  
@@ -48,6 +158,12 @@ model User {
   emailVerified DateTime? 
   image         String?
   accounts      Account[]
+
+  userProgress UserProgress[]
+  purchase Purchase[]
+  courses Course[]
+
+  stripeCustomer StripeCustomer?
 
 
   role          Role @default(USER)
