@@ -19,8 +19,14 @@ const SidebarItem = ({ icon: Icon, label, href } : Props) => {
     const isActive = (pathName === "/") && (href === "/") ||
                     pathName === href ||
                     pathName.startsWith(`${href}/`)
+
+    const onClick = () => {
+        router.push(href)
+    }
   return (
-    <button className={cn(
+    <button 
+        onClick={onClick}
+        className={cn(
             "flex itemc-center gap-x-2 text-muted-foreground text-sm pl-6 transition-all hover:bg-muted/40 font-[500]",
             isActive && "text-muted-foreground bg-muted hover:bg-muted"
         )}
