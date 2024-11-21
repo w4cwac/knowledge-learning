@@ -9,6 +9,9 @@ export default {
   ],
   theme: {
   	extend: {
+		boxShadow: {
+			'3xl': '0 35px 35px 20px rgba(0, 116, 199, 0.3)',
+		  },
   		colors: {
 			
 			'white' : '#f1f8fc',
