@@ -18,6 +18,9 @@ import {
 import { Input } from "@/components/ui/input"
 import { creatCourseSchema } from "@/schema"
 import Link from "next/link"
+import { toast } from "sonner"
+import { createCourse } from "@/data"
+import { useRouter } from "next/navigation"
 
 const page = () => {
 
@@ -28,9 +31,16 @@ const page = () => {
         },
     })
     const { isSubmitting, isValid } = form.formState
+    const router = useRouter()
 
     const onSubmit = async(data: z.infer<typeof creatCourseSchema>) => {
-        console.log(data)
+        try {
+            const response = await createCourse(data)
+            toast.success("course created")
+            router.push(`/teacher/courses/${response.id}`) //redirection vers la page du cours créé
+        } catch (error) {
+            toast.error("Error creating course")
+        }
     }
 
   return (
@@ -65,7 +75,7 @@ const page = () => {
                         )}
                     />
                     <div className="flex w-full items-center gap-x-2">
-                        <Button type="submit" className="bg-vert" disabled={isSubmitting || isValid }>Create</Button>
+                        <Button type="submit" className="bg-vert" >Create</Button>
                         <Link href={"/"}>
                             <Button type="button" className="bg-rouge hover:bg-rouge/70">Cancel</Button>
                         

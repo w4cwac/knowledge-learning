@@ -1,7 +1,7 @@
 import authConfig from "./auth.config"
 import NextAuth from "next-auth"
 
-import { publicRoutes, authRoutes, apiAuthPrefix, DEFAULT_REDIRECT } from "./routes"
+import { publicRoutes, authRoutes, apiAuthPrefix, DEFAULT_REDIRECT, webhooksRoutes } from "./routes"
 import { NextResponse } from "next/server"
  
 // Use only one of the two middleware options below
@@ -15,10 +15,11 @@ export default auth(async function middleware(req) {
   const isLoggedIn = !!req.auth
 
   const isPublicRoutes = publicRoutes.includes(nextUrl.pathname)
+  const isWebhookRoutes = webhooksRoutes.includes(nextUrl.pathname)
   const isAuthRoutes = authRoutes.includes(nextUrl.pathname)
   const isApiAuth = nextUrl.pathname.startsWith(apiAuthPrefix)
 
-  if (isApiAuth) {
+  if (isApiAuth || isWebhookRoutes) {
     return
   }
 
